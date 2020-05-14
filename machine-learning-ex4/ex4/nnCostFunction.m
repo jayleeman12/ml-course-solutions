@@ -61,23 +61,19 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+X = [ones(m, 1) X];
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(size(a2, 1), 1) a2];
+h = sigmoid(a2 * Theta2');
+y = bsxfun(@eq, 1:size(h, 2), y);
+% 2 sum function calls: one for each training item, and one for each of the classes
+J = sum(sum((-y .* log(h)) - ((ones(size(y, 1), 1) - y) .* log(ones(size(h, 1), 1) - h)))) / m;
+J = J + ((lambda / (2*m)) * (sum(sum(Theta1.^2)) + sum(sum(Theta2.^2))));
+delta3 = y - h;
+delta2 = ((delta3 * Theta2) .* sigmoidGradient([ones(size(z2, 1), 1) z2]));
+Theta2_grad = delta3' * a2;
+Theta1_grad = delta2' * X;
 
 
 % -------------------------------------------------------------
