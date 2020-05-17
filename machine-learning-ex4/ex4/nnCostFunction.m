@@ -70,10 +70,16 @@ y = bsxfun(@eq, 1:size(h, 2), y);
 % 2 sum function calls: one for each training item, and one for each of the classes
 J = sum(sum((-y .* log(h)) - ((ones(size(y, 1), 1) - y) .* log(ones(size(h, 1), 1) - h)))) / m;
 J = J + ((lambda / (2*m)) * (sum(sum(Theta1.^2)) + sum(sum(Theta2.^2))));
-delta3 = y - h;
+delta3 = h - y;
 delta2 = ((delta3 * Theta2) .* sigmoidGradient([ones(size(z2, 1), 1) z2]));
-Theta2_grad = delta3' * a2;
-Theta1_grad = delta2' * X;
+regularized_theta2 = Theta2;
+regularized_theta2(:, 1) = 0;
+regularized_theta2 = regularized_theta2 .* (lambda / m);
+regularized_theta1 = Theta1;
+regularized_theta1(:, 1) = 0;
+regularized_theta1 = regularized_theta1 .* (lambda / m);
+Theta2_grad = ((delta3' * a2) ./ m) + regularized_theta2;
+Theta1_grad = ((delta2(:, 2:end)' * X) ./ m) + regularized_theta1;
 
 
 % -------------------------------------------------------------
